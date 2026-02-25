@@ -13,7 +13,6 @@ void actualizarProducto(List<Map<String, dynamic>> productos) {
 
   int index;
 
-  // ===== VALIDAR SELECCIÓN =====
   do {
     stdout.write("Número del producto a actualizar: ");
     index = int.tryParse(stdin.readLineSync() ?? '') ?? -1;
@@ -25,42 +24,39 @@ void actualizarProducto(List<Map<String, dynamic>> productos) {
 
   Map<String, dynamic> producto = productos[index - 1];
 
-  // ===== VALIDAR NUEVO NOMBRE =====
-  String nuevoNombre;
-  do {
-    stdout.write("Nuevo nombre (${producto['nombre']}): ");
-    nuevoNombre = stdin.readLineSync()?.trim() ?? '';
+  // ===== NOMBRE OPCIONAL =====
+  stdout.write("Nuevo nombre (${producto['nombre']}): ");
+  String nuevoNombre = stdin.readLineSync()?.trim() ?? '';
 
-    if (nuevoNombre.isEmpty) {
-      print("El nombre no puede estar vacío.");
+  if (nuevoNombre.isNotEmpty) {
+    producto['nombre'] = nuevoNombre;
+  }
+
+  // ===== PRECIO OPCIONAL =====
+  stdout.write("Nuevo precio (${producto['precio']}): ");
+  String inputPrecio = stdin.readLineSync() ?? '';
+
+  if (inputPrecio.isNotEmpty) {
+    double? nuevoPrecio = double.tryParse(inputPrecio);
+    if (nuevoPrecio != null && nuevoPrecio > 0) {
+      producto['precio'] = nuevoPrecio;
+    } else {
+      print("Precio inválido. Se mantiene el anterior.");
     }
-  } while (nuevoNombre.isEmpty);
+  }
 
-  // ===== VALIDAR NUEVO PRECIO =====
-  double nuevoPrecio;
-  do {
-    stdout.write("Nuevo precio (${producto['precio']}): ");
-    nuevoPrecio = double.tryParse(stdin.readLineSync() ?? '') ?? -1;
+  // ===== CANTIDAD OPCIONAL =====
+  stdout.write("Nueva cantidad (${producto['cantidad']}): ");
+  String inputCantidad = stdin.readLineSync() ?? '';
 
-    if (nuevoPrecio <= 0) {
-      print("Ingrese un precio válido mayor a 0.");
+  if (inputCantidad.isNotEmpty) {
+    int? nuevaCantidad = int.tryParse(inputCantidad);
+    if (nuevaCantidad != null && nuevaCantidad > 0) {
+      producto['cantidad'] = nuevaCantidad;
+    } else {
+      print("Cantidad inválida. Se mantiene la anterior.");
     }
-  } while (nuevoPrecio <= 0);
-
-  // ===== VALIDAR NUEVA CANTIDAD =====
-  int nuevaCantidad;
-  do {
-    stdout.write("Nueva cantidad (${producto['cantidad']}): ");
-    nuevaCantidad = int.tryParse(stdin.readLineSync() ?? '') ?? -1;
-
-    if (nuevaCantidad <= 0) {
-      print("Ingrese una cantidad válida mayor a 0.");
-    }
-  } while (nuevaCantidad <= 0);
-
-  producto['nombre'] = nuevoNombre;
-  producto['precio'] = nuevoPrecio;
-  producto['cantidad'] = nuevaCantidad;
+  }
 
   print("Producto actualizado correctamente.");
 }
@@ -78,7 +74,6 @@ void eliminarProducto(List<Map<String, dynamic>> productos) {
 
   int index;
 
-  // ===== VALIDAR SELECCIÓN =====
   do {
     stdout.write("Número del producto a eliminar: ");
     index = int.tryParse(stdin.readLineSync() ?? '') ?? -1;
